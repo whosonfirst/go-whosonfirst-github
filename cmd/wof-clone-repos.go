@@ -113,10 +113,12 @@ func main() {
 		opt.ListOptions.Page = resp.NextPage
 	}
 
-	log.Println("cloning...")
+	t1 := time.Now()
 
 	wg.Wait()
 
-	log.Println("done")
+	t2 := time.Since(t1)
+
+	log.Printf("finished cloning all the repos in %v\n", t2)
 	os.Exit(0)
 }
