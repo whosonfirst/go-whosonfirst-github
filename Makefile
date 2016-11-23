@@ -7,6 +7,7 @@ prep:
 	if test -d pkg; then rm -rf pkg; fi
 
 self:   prep
+	if test ! -d src; then mkdir src; fi
 	cp -r vendor/src/* src/
 
 rmdeps:
