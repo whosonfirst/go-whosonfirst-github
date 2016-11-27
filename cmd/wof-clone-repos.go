@@ -12,7 +12,9 @@ import (
 	"time"
 )
 
-func Clone(dest string, repo *github.Repository, throttle chan bool, wg *sync.WaitGroup) error {
+// https://godoc.org/github.com/google/go-github/github#Repository
+
+func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool, wg *sync.WaitGroup) error {
 
 	defer func() {
 		wg.Done()
@@ -26,6 +28,11 @@ func Clone(dest string, repo *github.Repository, throttle chan bool, wg *sync.Wa
 	name := *repo.Name
 
 	remote := *repo.CloneURL
+
+	if giturl {
+		remote = *repo.GitURL
+	}
+
 	local := filepath.Join(dest, name)
 
 	_, err := os.Stat(local)
@@ -61,6 +68,7 @@ func main() {
 	dest := flag.String("destination", "/usr/local/data", "Where to clone repositories to")
 	org := flag.String("org", "whosonfirst-data", "The name of the organization to clone repositories from")
 	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
+	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
 
 	flag.Parse()
 
@@ -103,7 +111,7 @@ func main() {
 
 			wg.Add(1)
 
-			go Clone(*dest, r, throttle, wg)
+			go Clone(*dest, r, *giturl, throttle, wg)
 		}
 
 		if resp.NextPage == 0 {
