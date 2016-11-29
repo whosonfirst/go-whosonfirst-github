@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/google/go-github/github"
 	"log"
 	"os"
@@ -37,17 +38,28 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	_, err := os.Stat(local)
 
-	if os.IsExist(err) {
-		log.Println(local, "already exists")
-		return err
-	}
-
 	git := "git"
-	args := []string{"clone", remote, local}
+	git_args := make([]string, 0)
+
+	if os.IsExist(err) {
+
+
+		git_dir := filepath.Join(local, ".git")
+
+		git_dir = fmt.Sprintf("--git-dir=%s", git_dir)
+		work_dir := fmt.Sprintf("--work-dir=%s", git_dir)
+
+		git_args = []string{ git_dir, work_dir, "fetch" }
+
+	} else {
+
+	  git_args = []string{"clone", remote, local}
+
+	}
 
 	t1 := time.Now()
 
-	cmd := exec.Command(git, args...)
+	cmd := exec.Command(git, git_args...)
 
 	_, err = cmd.Output()
 
