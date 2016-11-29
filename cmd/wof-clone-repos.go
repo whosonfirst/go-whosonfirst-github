@@ -38,28 +38,28 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	_, err := os.Stat(local)
 
-	git := "git"
-	git_args := make([]string, 0)
+	var git_args []string
 
-	if os.IsExist(err) {
+	if os.IsNotExist(err) {
 
-
-		git_dir := filepath.Join(local, ".git")
-
-		git_dir = fmt.Sprintf("--git-dir=%s", git_dir)
-		work_dir := fmt.Sprintf("--work-dir=%s", git_dir)
-
-		git_args = []string{ git_dir, work_dir, "fetch" }
+		git_args = []string{"clone", remote, local}
 
 	} else {
 
-	  git_args = []string{"clone", remote, local}
+		dot_git := filepath.Join(local, ".git")
+
+		git_dir := fmt.Sprintf("--git-dir=%s", dot_git)
+		work_dir := fmt.Sprintf("--work-dir=%s", dot_git)
+
+		git_args = []string{git_dir, work_dir, "fetch"}
 
 	}
 
+	log.Println("git", strings.Join(git_args, " "))
+
 	t1 := time.Now()
 
-	cmd := exec.Command(git, git_args...)
+	cmd := exec.Command("git", git_args...)
 
 	_, err = cmd.Output()
 
@@ -106,6 +106,12 @@ func main() {
 		throttle <- true
 	}
 
+	dest_abs, err := filepath.Abs(*dest)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	wg := new(sync.WaitGroup)
 
 	for {
@@ -123,7 +129,7 @@ func main() {
 
 			wg.Add(1)
 
-			go Clone(*dest, r, *giturl, throttle, wg)
+			go Clone(dest_abs, r, *giturl, throttle, wg)
 		}
 
 		if resp.NextPage == 0 {
