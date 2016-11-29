@@ -54,8 +54,9 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 		git_args = []string{git_dir, work_tree, "pull", "origin", "master"}
 	}
 
+	log.Println("git", strings.Join(git_args, " "))
+
 	if dryrun {
-		log.Println("git", strings.Join(git_args, " "))
 		return nil
 	}
 
