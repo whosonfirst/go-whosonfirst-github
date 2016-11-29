@@ -25,6 +25,14 @@ Usage of ./bin/wof-clone-repos:
     	The number of concurrent processes to clone with (default 20)
 ```
 
+## Caveats
+
+### Things this package doesn't deal with (yet)
+
+* Anything that requires a GitHub API access token
+* Anything other than the `master` branch of a repository
+* The ability to exclude specific repositories
+
 ## See also
 
 * https://github.com/whosonfirst-data/
