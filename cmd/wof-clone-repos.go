@@ -15,14 +15,14 @@ import (
 
 // https://godoc.org/github.com/google/go-github/github#Repository
 
-func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool, wg *sync.WaitGroup) error {
+// please make me a struct-thingy or something (20161129/thisisaaronland)
+
+func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool, wg *sync.WaitGroup, dryrun bool) error {
 
 	defer func() {
 		wg.Done()
 		throttle <- true
 	}()
-
-	log.Println("waiting to clone", *repo.Name)
 
 	<-throttle
 
@@ -49,13 +49,15 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 		dot_git := filepath.Join(local, ".git")
 
 		git_dir := fmt.Sprintf("--git-dir=%s", dot_git)
-		work_dir := fmt.Sprintf("--work-dir=%s", dot_git)
+		work_tree := fmt.Sprintf("--work-tree=%s", dot_git)
 
-		git_args = []string{git_dir, work_dir, "fetch"}
-
+		git_args = []string{git_dir, work_tree, "pull", "origin", "master"}
 	}
 
-	log.Println("git", strings.Join(git_args, " "))
+	if dryrun {
+		log.Println("git", strings.Join(git_args, " "))
+		return nil
+	}
 
 	t1 := time.Now()
 
@@ -81,6 +83,7 @@ func main() {
 	org := flag.String("org", "whosonfirst-data", "The name of the organization to clone repositories from")
 	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
 	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
+	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't actually clone (or update) anything")
 
 	flag.Parse()
 
@@ -129,7 +132,7 @@ func main() {
 
 			wg.Add(1)
 
-			go Clone(dest_abs, r, *giturl, throttle, wg)
+			go Clone(dest_abs, r, *giturl, throttle, wg, *dryrun)
 		}
 
 		if resp.NextPage == 0 {
