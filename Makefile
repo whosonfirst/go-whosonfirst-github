@@ -28,3 +28,4 @@ fmt:
 
 bin:	self
 	@GOPATH=$(GOPATH) go build -o bin/wof-clone-repos cmd/wof-clone-repos.go
+	@GOPATH=$(GOPATH) go build -o bin/wof-list-repos cmd/wof-list-repos.go
