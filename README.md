@@ -25,6 +25,19 @@ Usage of ./bin/wof-clone-repos:
     	The number of concurrent processes to clone with (default 20)
 ```
 
+### wof-list-repos
+
+Print (to STDOUT) the list of repository names for an organization.
+
+```
+./bin/wof-list-repos -h
+Usage of ./bin/wof-list-repos:
+  -org string
+    	The name of the organization to clone repositories from (default "whosonfirst-data")
+  -prefix string
+    	Limit repositories to only those with this prefix (default "whosonfirst-data")
+```
+
 ## Caveats
 
 ### Things this package doesn't deal with (yet)
