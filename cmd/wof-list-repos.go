@@ -9,11 +9,12 @@ import (
 	"strings"
 )
 
-
 func main() {
 
 	org := flag.String("org", "whosonfirst-data", "The name of the organization to clone repositories from")
 	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
+	forked := flag.Bool("forked", false, "Only include repositories that have been forked")
+	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
 
 	flag.Parse()
 
@@ -33,6 +34,14 @@ func main() {
 		for _, r := range repos {
 
 			if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
+				continue
+			}
+
+			if *forked && !*r.Fork {
+				continue
+			}
+
+			if *not_forked && *r.Fork {
 				continue
 			}
 

@@ -32,10 +32,47 @@ Print (to STDOUT) the list of repository names for an organization.
 ```
 ./bin/wof-list-repos -h
 Usage of ./bin/wof-list-repos:
+  -forked
+    	Only include repositories that have been forked
+  -not-forked
+    	Only include repositories that have not been forked
   -org string
     	The name of the organization to clone repositories from (default "whosonfirst-data")
   -prefix string
     	Limit repositories to only those with this prefix (default "whosonfirst-data")
+```
+
+For example:
+
+```
+./bin/wof-list-repos -org whosonfirst -prefix '' -forked | sort
+Clustr
+emoji-search
+flamework
+flamework-api
+flamework-artisanal-integers
+flamework-aws
+flamework-geo
+flamework-invitecodes
+flamework-multifactor-auth
+flamework-storage
+flamework-tools
+go-pubsocketd
+go-ucd
+now
+privatesquare
+py-flamework-api
+py-machinetag
+py-slack-api
+python-edtf
+reachable
+redis-tools
+slackcat
+suncalc-go
+walk
+watchman
+whereonearth-metropolitan-area
+youarehere-www
 ```
 
 ## Caveats
