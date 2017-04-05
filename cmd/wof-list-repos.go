@@ -1,6 +1,7 @@
 package main
 
 import (
+       "context"
 	"flag"
 	"fmt"
 	"github.com/google/go-github/github"
@@ -20,12 +21,14 @@ func main() {
 
 	client := github.NewClient(nil)
 
+	ctx := context.TODO()
+	
 	opt := &github.RepositoryListByOrgOptions{
 		ListOptions: github.ListOptions{PerPage: 100},
 	}
 
 	for {
-		repos, resp, err := client.Repositories.ListByOrg(*org, opt)
+		repos, resp, err := client.Repositories.ListByOrg(ctx, *org, opt)
 
 		if err != nil {
 			log.Fatal(err)

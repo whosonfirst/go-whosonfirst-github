@@ -1,6 +1,7 @@
 package main
 
 import (
+       "context"
 	"flag"
 	"fmt"
 	"github.com/google/go-github/github"
@@ -118,8 +119,10 @@ func main() {
 
 	wg := new(sync.WaitGroup)
 
+	ctx := context.TODO()
+	
 	for {
-		repos, resp, err := client.Repositories.ListByOrg(*org, opt)
+		repos, resp, err := client.Repositories.ListByOrg(ctx, *org, opt)
 
 		if err != nil {
 			log.Fatal(err)
