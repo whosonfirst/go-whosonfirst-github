@@ -141,8 +141,28 @@ func TestParseWebHook(t *testing.T) {
 			messageType: "milestone",
 		},
 		{
+			payload:     &OrganizationEvent{},
+			messageType: "organization",
+		},
+		{
 			payload:     &PageBuildEvent{},
 			messageType: "page_build",
+		},
+		{
+			payload:     &PingEvent{},
+			messageType: "ping",
+		},
+		{
+			payload:     &ProjectEvent{},
+			messageType: "project",
+		},
+		{
+			payload:     &ProjectCardEvent{},
+			messageType: "project_card",
+		},
+		{
+			payload:     &ProjectColumnEvent{},
+			messageType: "project_column",
 		},
 		{
 			payload:     &PublicEvent{},
