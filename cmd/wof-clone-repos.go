@@ -1,10 +1,10 @@
 package main
 
 import (
-       "context"
 	"flag"
 	"fmt"
 	"github.com/google/go-github/github"
+	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"os"
 	"os/exec"
@@ -99,7 +99,11 @@ func main() {
 		log.Fatal(*dest, "is not a directory")
 	}
 
-	client := github.NewClient(nil)
+	client, ctx, err := util.NewClientAndContext("")
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	opt := &github.RepositoryListByOrgOptions{
 		ListOptions: github.ListOptions{PerPage: 100},
@@ -119,8 +123,6 @@ func main() {
 
 	wg := new(sync.WaitGroup)
 
-	ctx := context.TODO()
-	
 	for {
 		repos, resp, err := client.Repositories.ListByOrg(ctx, *org, opt)
 

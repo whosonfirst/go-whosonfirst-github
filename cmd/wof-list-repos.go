@@ -1,10 +1,10 @@
 package main
 
 import (
-       "context"
 	"flag"
 	"fmt"
 	"github.com/google/go-github/github"
+	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"os"
 	"strings"
@@ -19,10 +19,12 @@ func main() {
 
 	flag.Parse()
 
-	client := github.NewClient(nil)
+	client, ctx, err := util.NewClientAndContext("")
 
-	ctx := context.TODO()
-	
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	opt := &github.RepositoryListByOrgOptions{
 		ListOptions: github.ListOptions{PerPage: 100},
 	}

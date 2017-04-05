@@ -8,6 +8,8 @@ prep:
 
 self:   prep
 	if test ! -d src; then mkdir src; fi
+	mkdir -p src/github.com/whosonfirst/go-whosonfirst-github/util
+	cp util/*.go src/github.com/whosonfirst/go-whosonfirst-github/util/
 	cp -r vendor/src/* src/
 
 rmdeps:
@@ -15,6 +17,7 @@ rmdeps:
 
 deps:   
 	@GOPATH=$(GOPATH) go get -u "github.com/google/go-github/github"
+	@GOPATH=$(GOPATH) go get -u "golang.org/x/oauth2"
 
 vendor-deps: rmdeps deps
 	if test ! -d vendor; then mkdir vendor; fi
@@ -25,6 +28,7 @@ vendor-deps: rmdeps deps
 
 fmt:
 	go fmt cmd/*.go
+	go fmt util/*.go
 
 bin:	self
 	@GOPATH=$(GOPATH) go build -o bin/wof-clone-repos cmd/wof-clone-repos.go
