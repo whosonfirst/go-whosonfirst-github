@@ -30,7 +30,21 @@ Usage of ./bin/wof-clone-repos:
 _Please write me_
 
 ```
-./bin/wof-create-hook -oauth2-token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
+./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
+```
+
+```
+./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo '*'
+fetching repo list...🕓 
+2017/04/05 15:42:24 webhook already configured for whosonfirst-data, skipping
+2017/04/05 15:42:24 created webhook for whosonfirst-data-venue-us-wv
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ne
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-wi
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-nv
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ar
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ms
+
+...and so on
 ```
 
 ### wof-list-repos

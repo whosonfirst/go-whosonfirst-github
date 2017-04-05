@@ -9,18 +9,20 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/briandowns/spinner"
 	"github.com/google/go-github/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"strings"
+	"time"
 )
 
 func main() {
 
-	org := flag.String("org", "whosonfirst", "")
+	org := flag.String("org", "", "")
 	repo := flag.String("repo", "", "")
-	token := flag.String("oauth2-token", "", "...")
-	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
+	token := flag.String("token", "", "...")
+	prefix := flag.String("prefix", "", "Limit repositories to only those with this prefix")
 
 	name := flag.String("hook-name", "web", "")
 	url := flag.String("hook-url", "", "")
@@ -54,13 +56,35 @@ func main() {
 
 		_, _, err = client.Organizations.CreateHook(ctx, *org, &hook)
 
+		if err != nil {
+			log.Fatal(err)
+		}
+
 	} else {
 
 		has_hook := make(map[string]bool)
 
 		repos := make([]string, 0)
 
-		if *repo == "all" {
+		if *repo == "*" {
+
+			done := make(chan bool)
+
+			go func() {
+
+				sp := spinner.New(spinner.CharSets[38], 200*time.Millisecond)
+				sp.Prefix = "fetching repo list..."
+				sp.Start()
+
+				for {
+
+					select {
+					case <-done:
+						sp.Stop()
+						return
+					}
+				}
+			}()
 
 			repos_opts := &github.RepositoryListByOrgOptions{
 				ListOptions: github.ListOptions{PerPage: 100},
@@ -75,8 +99,6 @@ func main() {
 				}
 
 				for _, r := range repos_list {
-
-					log.Println(r)
 
 					if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
 						continue
@@ -109,6 +131,8 @@ func main() {
 				repos_opts.ListOptions.Page = repos_rsp.NextPage
 			}
 
+			done <- true
+
 		} else {
 			repos = append(repos, *repo)
 		}
@@ -118,18 +142,18 @@ func main() {
 			_, ok := has_hook[r]
 
 			if ok {
-				log.Println("hook already configured", r)
+				log.Println(fmt.Sprintf("webhook already configured for %s, skipping", r))
 				continue
 			}
 
-			log.Println(fmt.Sprintf("CREATE HOOK FOR '%s'", r))
-			// _, _, err = client.Repositories.CreateHook(ctx, *org, r, &hook)
+			_, _, err = client.Repositories.CreateHook(ctx, *org, r, &hook)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			log.Println(fmt.Sprintf("created webhook for %s", r))
 		}
 	}
 
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.Println("OK")
 }
