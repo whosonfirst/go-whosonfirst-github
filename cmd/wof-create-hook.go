@@ -1,6 +1,5 @@
 package main
 
-// THIS HAS NOT BEEN TESTED YET
 // https://developer.github.com/v3/repos/hooks/#create-a-hook
 
 // https://godoc.org/github.com/google/go-github/github#RepositoriesService.CreateHook
@@ -9,9 +8,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/google/go-github/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
+	"strings"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 	org := flag.String("org", "whosonfirst", "")
 	repo := flag.String("repo", "", "")
 	token := flag.String("oauth2-token", "", "...")
+	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
 
 	name := flag.String("hook-name", "web", "")
 	url := flag.String("hook-url", "", "")
@@ -37,10 +39,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Check to see if *url is already registered for this org/repo...
-
-	// https://developer.github.com/v3/repos/hooks/#example
-
 	config := make(map[string]interface{})
 
 	config["url"] = *url
@@ -58,7 +56,75 @@ func main() {
 
 	} else {
 
-		_, _, err = client.Repositories.CreateHook(ctx, *org, *repo, &hook)
+		has_hook := make(map[string]bool)
+
+		repos := make([]string, 0)
+
+		if *repo == "all" {
+
+			repos_opts := &github.RepositoryListByOrgOptions{
+				ListOptions: github.ListOptions{PerPage: 100},
+			}
+
+			for {
+
+				repos_list, repos_rsp, err := client.Repositories.ListByOrg(ctx, *org, repos_opts)
+
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				for _, r := range repos_list {
+
+					log.Println(r)
+
+					if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
+						continue
+					}
+
+					repos = append(repos, *r.Name)
+
+					hooks_opts := github.ListOptions{PerPage: 100}
+
+					hooks, _, err := client.Repositories.ListHooks(ctx, *org, *r.Name, &hooks_opts)
+
+					if err != nil {
+						log.Fatal(err)
+					}
+
+					for _, h := range hooks {
+
+						if h.Config["url"] == *url {
+							has_hook[*r.Name] = true
+							break
+						}
+					}
+
+				}
+
+				if repos_rsp.NextPage == 0 {
+					break
+				}
+
+				repos_opts.ListOptions.Page = repos_rsp.NextPage
+			}
+
+		} else {
+			repos = append(repos, *repo)
+		}
+
+		for _, r := range repos {
+
+			_, ok := has_hook[r]
+
+			if ok {
+				log.Println("hook already configured", r)
+				continue
+			}
+
+			log.Println(fmt.Sprintf("CREATE HOOK FOR '%s'", r))
+			// _, _, err = client.Repositories.CreateHook(ctx, *org, r, &hook)
+		}
 	}
 
 	if err != nil {

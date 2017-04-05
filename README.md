@@ -25,6 +25,14 @@ Usage of ./bin/wof-clone-repos:
     	The number of concurrent processes to clone with (default 20)
 ```
 
+### wof-create-hook
+
+_Please write me_
+
+```
+./bin/wof-create-hook -oauth2-token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
+```
+
 ### wof-list-repos
 
 Print (to STDOUT) the list of repository names for an organization.
