@@ -2,9 +2,64 @@
 
 Go package for working with Who's On First GitHub repositories.
 
-## Utilities
+## Tools
 
-### wof-clone-repos
+### Webhooks
+
+_All of the webhook tools need some documentation loving..._
+
+#### wof-create-hook
+
+_Please write me_
+
+```
+./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
+```
+
+You can also create webhooks for all of the repositories in an organization by passing the `-repo '*'` flag. You can still filter the list of repos by setting the `-prefix` flag.
+
+```
+./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo '*' -prefix whosonfirst-data
+fetching repo list...🕓 
+2017/04/05 15:42:24 webhook already configured for whosonfirst-data, skipping
+2017/04/05 15:42:24 created webhook for whosonfirst-data-venue-us-wv
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ne
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-wi
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-nv
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ar
+2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ms
+
+...and so on
+```
+
+#### wof-list-hooks
+
+_Please write me_
+
+#### wof-update-hook
+
+_Please write me_
+
+```
+./bin/wof-update-hook -token {TOKEN} -hook-url {URL} -hook-secret {NEW_SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
+```
+
+You can also update webhooks for all of the repositories in an organization by passing the `-repo '*'` flag. You can still filter the list of repos by setting the `-prefix` flag.
+
+```
+./bin/wof-update-hook -token {TOKEN} -hook-url {URL} -hook-secret {NEW_SECRET} -org whosonfirst-data -repo '*' -prefix whosonfirst-data
+fetching repo list...🕓 
+2017/04/05 15:42:24 edited webhook for whosonfirst-data
+2017/04/05 15:42:24 edited webhook for whosonfirst-data-venue-us-wv
+2017/04/05 15:42:25 edited webhook for whosonfirst-data-venue-us-ne
+2017/04/05 15:42:25 edited webhook for whosonfirst-data-venue-us-wi
+
+...and so on
+```
+
+### Repos
+
+#### wof-clone-repos
 
 Clone (or update from `master`) Who's On First data repositories in parallel.
 
@@ -25,29 +80,7 @@ Usage of ./bin/wof-clone-repos:
     	The number of concurrent processes to clone with (default 20)
 ```
 
-### wof-create-hook
-
-_Please write me_
-
-```
-./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
-```
-
-```
-./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo '*'
-fetching repo list...🕓 
-2017/04/05 15:42:24 webhook already configured for whosonfirst-data, skipping
-2017/04/05 15:42:24 created webhook for whosonfirst-data-venue-us-wv
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ne
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-wi
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-nv
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ar
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ms
-
-...and so on
-```
-
-### wof-list-repos
+#### wof-list-repos
 
 Print (to STDOUT) the list of repository names for an organization.
 
