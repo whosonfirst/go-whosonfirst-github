@@ -84,6 +84,7 @@ func main() {
 	dest := flag.String("destination", "/usr/local/data", "Where to clone repositories to")
 	org := flag.String("org", "whosonfirst-data", "The name of the organization to clone repositories from")
 	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
+	exclude := flag.String("exclude", "", "Exclude repositories with this prefix")
 	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
 	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't actually clone (or update) anything")
 
@@ -136,6 +137,10 @@ func main() {
 				continue
 			}
 
+			if *exclude != "" && strings.HasPrefix(*r.Name, *exclude) {
+			   	continue
+			}
+			
 			wg.Add(1)
 
 			go Clone(dest_abs, r, *giturl, throttle, wg, *dryrun)

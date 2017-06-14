@@ -14,6 +14,7 @@ func main() {
 
 	org := flag.String("org", "whosonfirst-data", "The name of the organization to clone repositories from")
 	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
+	exclude := flag.String("exclude", "", "Exclude repositories with this prefix")
 	forked := flag.Bool("forked", false, "Only include repositories that have been forked")
 	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
 
@@ -40,6 +41,10 @@ func main() {
 
 			if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
 				continue
+			}
+
+			if *exclude != "" && strings.HasPrefix(*r.Name, *exclude) {
+			   	continue
 			}
 
 			if *forked && !*r.Fork {
