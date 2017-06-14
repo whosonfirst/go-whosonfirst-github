@@ -87,7 +87,8 @@ func main() {
 	exclude := flag.String("exclude", "", "Exclude repositories with this prefix")
 	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
 	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't actually clone (or update) anything")
-
+	token := flag.String("token", "", "A valid GitHub API access token")
+	
 	flag.Parse()
 
 	info, err := os.Stat(*dest)
@@ -100,7 +101,7 @@ func main() {
 		log.Fatal(*dest, "is not a directory")
 	}
 
-	client, ctx, err := util.NewClientAndContext("")
+	client, ctx, err := util.NewClientAndContext(*token)
 
 	if err != nil {
 		log.Fatal(err)
