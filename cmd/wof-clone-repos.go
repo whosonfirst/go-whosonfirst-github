@@ -18,7 +18,7 @@ import (
 
 // please make me a struct-thingy or something (20161129/thisisaaronland)
 
-func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool, wg *sync.WaitGroup, dryrun bool) error {
+func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool, wg *sync.WaitGroup, dryrun bool, strict bool) error {
 
 	defer func() {
 		wg.Done()
@@ -69,6 +69,11 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 	_, err = cmd.Output()
 
 	if err != nil {
+
+	   	if strict {
+			log.Fatal(err)
+		}
+		
 		log.Println("failed to clone", local, err)
 		return err
 	}
@@ -88,6 +93,7 @@ func main() {
 	exclude := flag.String("exclude", "", "Exclude repositories with this prefix")
 	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
 	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't actually clone (or update) anything")
+	strict := flag.Bool("strict", false, "If any attempt to clone a repo fails trigger a fatal error")	
 	token := flag.String("token", "", "A valid GitHub API access token")
 
 	flag.Parse()
@@ -145,7 +151,7 @@ func main() {
 
 			wg.Add(1)
 
-			go Clone(dest_abs, r, *giturl, throttle, wg, *dryrun)
+			go Clone(dest_abs, r, *giturl, throttle, wg, *dryrun, *strict)
 		}
 
 		if resp.NextPage == 0 {
