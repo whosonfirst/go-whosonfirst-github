@@ -33,6 +33,7 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	if giturl {
 		remote = *repo.GitURL
+		remote = strings.Replace(remote, "git://github.com/", "git@github.com:", -1) // why do I even need to do this...???
 	}
 
 	local := filepath.Join(dest, name)
@@ -88,7 +89,7 @@ func main() {
 	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
 	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't actually clone (or update) anything")
 	token := flag.String("token", "", "A valid GitHub API access token")
-	
+
 	flag.Parse()
 
 	info, err := os.Stat(*dest)
@@ -139,9 +140,9 @@ func main() {
 			}
 
 			if *exclude != "" && strings.HasPrefix(*r.Name, *exclude) {
-			   	continue
+				continue
 			}
-			
+
 			wg.Add(1)
 
 			go Clone(dest_abs, r, *giturl, throttle, wg, *dryrun)

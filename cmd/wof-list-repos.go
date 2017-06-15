@@ -18,7 +18,7 @@ func main() {
 	forked := flag.Bool("forked", false, "Only include repositories that have been forked")
 	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
 	token := flag.String("token", "", "A valid GitHub API access token")
-	
+
 	flag.Parse()
 
 	client, ctx, err := util.NewClientAndContext(*token)
@@ -45,7 +45,7 @@ func main() {
 			}
 
 			if *exclude != "" && strings.HasPrefix(*r.Name, *exclude) {
-			   	continue
+				continue
 			}
 
 			if *forked && !*r.Fork {
