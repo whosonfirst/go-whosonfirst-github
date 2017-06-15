@@ -8,7 +8,9 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -44,7 +46,7 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	if os.IsNotExist(err) {
 
-		git_args = []string{"clone", remote, local}
+		git_args = []string{"clone", "-v", remote, local}
 
 	} else {
 
@@ -70,10 +72,22 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	if err != nil {
 
-	   	if strict {
-			log.Fatal(err)
+		if strict {
+
+			msg := fmt.Sprintf("failed to clone %s because : %s", local, err)
+
+			euid := os.Geteuid()
+			str_euid := strconv.Itoa(euid)
+
+			eff_user, eff_err := user.LookupId(str_euid)
+
+			if eff_err == nil {
+				msg = fmt.Sprintf("failed to clone %s because : %s (running as %s (%d))", local, err, eff_user.Username, euid)
+			}
+
+			log.Fatal(msg)
 		}
-		
+
 		log.Println("failed to clone", local, err)
 		return err
 	}
@@ -93,7 +107,7 @@ func main() {
 	exclude := flag.String("exclude", "", "Exclude repositories with this prefix")
 	giturl := flag.Bool("giturl", false, "Clone using Git URL (rather than default HTTPS)")
 	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't actually clone (or update) anything")
-	strict := flag.Bool("strict", false, "If any attempt to clone a repo fails trigger a fatal error")	
+	strict := flag.Bool("strict", false, "If any attempt to clone a repo fails trigger a fatal error")
 	token := flag.String("token", "", "A valid GitHub API access token")
 
 	flag.Parse()
