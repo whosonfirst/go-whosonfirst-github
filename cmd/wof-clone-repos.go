@@ -93,14 +93,24 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 	_, err = cmd.Output()
 
 	if err != nil {
-
+		log.Println(fmt.Sprintf("Failed to clone repo for %s: %s (git %s)", local, err, strings.Join(git_args, " ")))
 		return Error(err, strict)
 	}
 
 	t2 := time.Since(t1)
 	log.Printf("time to clone %s, %v\n", local, t2)
 
+	return nil
+
 	// now we do the LFS checkouts...
+
+	meta := filepath.Join(local, "meta")
+
+	_, err = os.Stat(meta)
+
+	if os.IsNotExist(err) {
+		return nil
+	}
 
 	cwd, err := os.Getwd()
 
@@ -154,7 +164,7 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	if err != nil {
 		log.Println(fmt.Sprintf("Failed to checkout LFS for %s: %s (git %s)", local, err, strings.Join(git_args, " ")))
-		return Error(err, strict)
+		return Error(err, strict)	
 	}
 
 	return nil
