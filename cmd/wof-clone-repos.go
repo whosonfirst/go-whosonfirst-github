@@ -18,6 +18,28 @@ import (
 
 // https://godoc.org/github.com/google/go-github/github#Repository
 
+func Error(err error, strict bool) error {
+
+	if strict {
+
+		msg := fmt.Sprintf("failed to clone repo because : %s", err)
+
+		euid := os.Geteuid()
+		str_euid := strconv.Itoa(euid)
+
+		eff_user, eff_err := user.LookupId(str_euid)
+
+		if eff_err == nil {
+			msg = fmt.Sprintf("failed to clone repo because : %s (running as %s (%d))", err, eff_user.Username, euid)
+		}
+
+		log.Fatal(msg)
+	}
+
+	log.Println("failed to clone", err)
+	return err
+}
+
 // please make me a struct-thingy or something (20161129/thisisaaronland)
 
 func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool, wg *sync.WaitGroup, dryrun bool, strict bool) error {
@@ -72,29 +94,69 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	if err != nil {
 
-		if strict {
-
-			msg := fmt.Sprintf("failed to clone %s because : %s", local, err)
-
-			euid := os.Geteuid()
-			str_euid := strconv.Itoa(euid)
-
-			eff_user, eff_err := user.LookupId(str_euid)
-
-			if eff_err == nil {
-				msg = fmt.Sprintf("failed to clone %s because : %s (running as %s (%d))", local, err, eff_user.Username, euid)
-			}
-
-			log.Fatal(msg)
-		}
-
-		log.Println("failed to clone", local, err)
-		return err
+		return Error(err, strict)
 	}
 
 	t2 := time.Since(t1)
-
 	log.Printf("time to clone %s, %v\n", local, t2)
+
+	// now we do the LFS checkouts...
+
+	cwd, err := os.Getwd()
+
+	if err != nil {
+		return Error(err, strict)
+	}
+
+	err = os.Chdir(local)
+
+	if err != nil {
+		return Error(err, strict)
+	}
+
+	defer os.Chdir(cwd) // make sure we go back to where we came from
+
+	//
+
+	var ta time.Time
+	var tb time.Duration
+
+	git_args = []string{"lfs", "fetch"}
+	cmd = exec.Command("git", git_args...)
+
+	log.Println("git %s", strings.Join(git_args, " "))
+
+	ta = time.Now()
+
+	_, err = cmd.Output()
+
+	tb = time.Since(ta)
+	log.Println("Time to fetch LFS: %v", tb)
+
+	if err != nil {
+		log.Println("Failed to fetch LFS: %s (git %s)", err, strings.Join(git_args, " "))
+		return Error(err, strict)
+	}
+
+	//
+
+	git_args = []string{"lfs", "checkout"}
+	cmd = exec.Command("git", git_args...)
+
+	log.Println("git %s", strings.Join(git_args, " "))
+
+	ta = time.Now()
+
+	_, err = cmd.Output()
+
+	tb = time.Since(ta)
+	log.Println("Time to checkout LFS: %v", tb)
+
+	if err != nil {
+		log.Println("Failed to checkout LFS: %s (git %s)", err, strings.Join(git_args, " "))
+		return Error(err, strict)
+	}
+
 	return nil
 }
 
