@@ -124,17 +124,17 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 	git_args = []string{"lfs", "fetch"}
 	cmd = exec.Command("git", git_args...)
 
-	log.Println("git %s", strings.Join(git_args, " "))
+	log.Printf("git %s (%s)\n", strings.Join(git_args, " "), local)
 
 	ta = time.Now()
 
 	_, err = cmd.Output()
 
 	tb = time.Since(ta)
-	log.Println("Time to fetch LFS: %v", tb)
+	log.Printf("Time to fetch LFS for %s: %v\n", local, tb)
 
 	if err != nil {
-		log.Println("Failed to fetch LFS: %s (git %s)", err, strings.Join(git_args, " "))
+		log.Println(fmt.Sprintf("Failed to fetch LFS for %s: %s (git %s)", local, err, strings.Join(git_args, " ")))
 		return Error(err, strict)
 	}
 
@@ -143,17 +143,17 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 	git_args = []string{"lfs", "checkout"}
 	cmd = exec.Command("git", git_args...)
 
-	log.Println("git %s", strings.Join(git_args, " "))
+	log.Printf("git %s (%s)\n", strings.Join(git_args, " "), local)
 
 	ta = time.Now()
 
 	_, err = cmd.Output()
 
 	tb = time.Since(ta)
-	log.Println("Time to checkout LFS: %v", tb)
+	log.Printf("Time to checkout LFS for %s: %v\n", local, tb)
 
 	if err != nil {
-		log.Println("Failed to checkout LFS: %s (git %s)", err, strings.Join(git_args, " "))
+		log.Println(fmt.Sprintf("Failed to checkout LFS for %s: %s (git %s)", local, err, strings.Join(git_args, " ")))
 		return Error(err, strict)
 	}
 
