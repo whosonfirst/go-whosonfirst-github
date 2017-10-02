@@ -3,11 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/google/go-github/github"
-	"github.com/whosonfirst/go-whosonfirst-github/util"
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 	"log"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -21,49 +19,22 @@ func main() {
 
 	flag.Parse()
 
-	client, ctx, err := util.NewClientAndContext(*token)
+	opts := organizations.NewDefaultListOptions()
+
+	opts.Prefix = *prefix
+	opts.Exclude = *exclude
+	opts.Forked = *forked
+	opts.NotForked = *not_forked
+	opts.AccessToken = *token
+	
+	repos, err := organizations.ListRepos(*org, opts)
 
 	if err != nil {
-		log.Fatal(err)
+	   log.Fatal(err)
 	}
 
-	opt := &github.RepositoryListByOrgOptions{
-		ListOptions: github.ListOptions{PerPage: 100},
-	}
-
-	for {
-		repos, resp, err := client.Repositories.ListByOrg(ctx, *org, opt)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		for _, r := range repos {
-
-			if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
-				continue
-			}
-
-			if *exclude != "" && strings.HasPrefix(*r.Name, *exclude) {
-				continue
-			}
-
-			if *forked && !*r.Fork {
-				continue
-			}
-
-			if *not_forked && *r.Fork {
-				continue
-			}
-
-			fmt.Println(*r.Name)
-		}
-
-		if resp.NextPage == 0 {
-			break
-		}
-
-		opt.ListOptions.Page = resp.NextPage
+	for _, name := range repos {
+		fmt.Println(name)
 	}
 
 	os.Exit(0)
