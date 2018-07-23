@@ -148,3 +148,4 @@ youarehere-www
 
 * https://github.com/whosonfirst-data/
 * https://github.com/google/go-github
+* https://en.wikipedia.org/wiki/ISO_8601#Durations
