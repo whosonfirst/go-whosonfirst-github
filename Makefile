@@ -21,6 +21,7 @@ deps:
 	@GOPATH=$(GOPATH) go get -u "github.com/google/go-github/github"
 	@GOPATH=$(GOPATH) go get -u "golang.org/x/oauth2"
 	@GOPATH=$(GOPATH) go get -u "github.com/briandowns/spinner"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/iso8601duration"
 
 vendor-deps: deps
 	if test -d vendor; then rm -rf vendor; fi

@@ -3,38 +3,54 @@ package organizations
 import (
 	"github.com/google/go-github/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
+	_ "log"
 	"strings"
+	"time"
 )
 
 type ListOptions struct {
-     Prefix string
-     Exclude string
-     Forked bool
-     NotForked bool
-     AccessToken string
+	Prefix      string
+	Exclude     string
+	Forked      bool
+	NotForked   bool
+	AccessToken string
+	PushedSince *time.Time
 }
 
 func NewDefaultListOptions() *ListOptions {
 
-     opts := ListOptions{
-     Prefix: "",
-     Exclude: "",
-     Forked: false,
-     NotForked: false,
-     AccessToken: "",
-     }
+	opts := ListOptions{
+		Prefix:      "",
+		Exclude:     "",
+		Forked:      false,
+		NotForked:   false,
+		AccessToken: "",
+		PushedSince: nil,
+	}
 
-     return &opts
+	return &opts
 }
 
 func ListRepos(org string, opts *ListOptions) ([]string, error) {
 
-     	repos := make([]string, 0)
-	
+	repos := make([]string, 0)
+
+	cb := func(r *github.Repository) error {
+		repos = append(repos, *r.Name)
+		return nil
+	}
+
+	err := ListReposWithCallback(org, opts, cb)
+
+	return repos, err
+}
+
+func ListReposWithCallback(org string, opts *ListOptions, cb func(repo *github.Repository) error) error {
+
 	client, ctx, err := util.NewClientAndContext(opts.AccessToken)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	gh_opts := &github.RepositoryListByOrgOptions{
@@ -42,11 +58,11 @@ func ListRepos(org string, opts *ListOptions) ([]string, error) {
 	}
 
 	for {
-	
+
 		possible, resp, err := client.Repositories.ListByOrg(ctx, org, gh_opts)
 
 		if err != nil {
-		   	return nil, err
+			return err
 		}
 
 		for _, r := range possible {
@@ -67,7 +83,19 @@ func ListRepos(org string, opts *ListOptions) ([]string, error) {
 				continue
 			}
 
-			repos = append(repos, *r.Name)
+			if opts.PushedSince != nil {
+
+				if r.PushedAt.Before(*opts.PushedSince) {
+					continue
+				}
+			}
+
+			err := cb(r)
+
+			if err != nil {
+				return err
+			}
+
 		}
 
 		if resp.NextPage == 0 {
@@ -77,5 +105,5 @@ func ListRepos(org string, opts *ListOptions) ([]string, error) {
 		gh_opts.ListOptions.Page = resp.NextPage
 	}
 
-	return repos, nil
+	return nil
 }

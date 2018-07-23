@@ -87,6 +87,8 @@ Print (to STDOUT) the list of repository names for an organization.
 ```
 ./bin/wof-list-repos -h
 Usage of ./bin/wof-list-repos:
+  -exclude string
+    	Exclude repositories with this prefix
   -forked
     	Only include repositories that have been forked
   -not-forked
@@ -95,6 +97,10 @@ Usage of ./bin/wof-list-repos:
     	The name of the organization to clone repositories from (default "whosonfirst-data")
   -prefix string
     	Limit repositories to only those with this prefix (default "whosonfirst-data")
+  -token string
+    	A valid GitHub API access token
+  -updated-since string
+    	A valid ISO8601 duration string (months are currently not supported)
 ```
 
 For example:

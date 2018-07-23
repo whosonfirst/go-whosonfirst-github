@@ -164,7 +164,7 @@ func Clone(dest string, repo *github.Repository, giturl bool, throttle chan bool
 
 	if err != nil {
 		log.Println(fmt.Sprintf("Failed to checkout LFS for %s: %s (git %s)", local, err, strings.Join(git_args, " ")))
-		return Error(err, strict)	
+		return Error(err, strict)
 	}
 
 	return nil
