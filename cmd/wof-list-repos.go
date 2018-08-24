@@ -35,7 +35,7 @@ func main() {
 	if *updated_since != "" {
 
 		var since time.Time
-		
+
 		is_timestamp, err := regexp.MatchString("^\\d+$", *updated_since)
 
 		if err != nil {
@@ -51,7 +51,7 @@ func main() {
 			}
 
 			now := time.Now()
-			
+
 			tm := time.Unix(int64(ts), 0)
 			since = now.Add(-time.Since(tm))
 
@@ -71,7 +71,7 @@ func main() {
 
 		// log.Printf("SINCE %v\n", since)
 		// os.Exit(0)
-		
+
 		opts.PushedSince = &since
 	}
 
