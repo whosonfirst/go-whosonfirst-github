@@ -24,7 +24,7 @@ func main() {
 	token := flag.String("token", "", "...")
 	prefix := flag.String("prefix", "", "Limit repositories to only those with this prefix")
 
-	name := flag.String("hook-name", "web", "")
+	// name := flag.String("hook-name", "web", "")
 	url := flag.String("hook-url", "", "")
 	content_type := flag.String("hook-content-type", "json", "")
 	secret := flag.String("hook-secret", "", "")
@@ -48,7 +48,7 @@ func main() {
 	config["secret"] = *secret
 
 	hook := github.Hook{
-		Name:   name,
+		// Name:   name,
 		Config: config,
 	}
 

@@ -23,7 +23,7 @@ func main() {
 	token := flag.String("token", "", "...")
 	prefix := flag.String("prefix", "", "Limit repositories to only those with this prefix")
 
-	name := flag.String("hook-name", "web", "")
+	// name := flag.String("hook-name", "web", "")
 	url := flag.String("hook-url", "", "")
 	content_type := flag.String("hook-content-type", "json", "")
 	secret := flag.String("hook-secret", "", "")
@@ -140,9 +140,11 @@ func main() {
 				hook.Config["content_type"] = *content_type
 			}
 
+			/*
 			if *name != "" {
 				hook.Name = name
 			}
+			*/
 
 			_, _, err = client.Repositories.EditHook(ctx, *org, r, *hook.ID, hook)
 
