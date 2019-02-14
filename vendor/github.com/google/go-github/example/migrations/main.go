@@ -12,7 +12,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-github/v19/github"
+	"github.com/google/go-github/v24/github"
 	"golang.org/x/oauth2"
 )
 
