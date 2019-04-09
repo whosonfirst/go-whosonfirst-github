@@ -23,7 +23,7 @@ deps:
 	@GOPATH=$(GOPATH) go get -u "github.com/briandowns/spinner"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/iso8601duration"
 
-vendor-deps: deps
+vendor-deps: rmdeps deps
 	if test -d vendor; then rm -rf vendor; fi
 	cp -r src vendor
 	find vendor -name '.git' -print -type d -exec rm -rf {} +
