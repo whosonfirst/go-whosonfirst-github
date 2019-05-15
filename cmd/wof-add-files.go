@@ -42,10 +42,14 @@ func main() {
 			log.Fatal(path, err)
 		}
 
-		_, err = os.Stat(abs_path)
+		info, err := os.Stat(abs_path)
 
 		if err != nil {
 			log.Fatal(abs_path, err)
+		}
+
+		if info.IsDir() {
+			log.Fatal("Directories are not supported")
 		}
 
 		files = append(files, abs_path)
