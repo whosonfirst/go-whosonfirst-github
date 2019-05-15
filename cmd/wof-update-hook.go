@@ -141,9 +141,9 @@ func main() {
 			}
 
 			/*
-			if *name != "" {
-				hook.Name = name
-			}
+				if *name != "" {
+					hook.Name = name
+				}
 			*/
 
 			_, _, err = client.Repositories.EditHook(ctx, *org, r, *hook.ID, hook)

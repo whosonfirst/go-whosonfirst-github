@@ -35,6 +35,7 @@ fmt:
 	go fmt organizations/*.go
 
 bin:	self
+	@GOPATH=$(GOPATH) go build -o bin/wof-add-files cmd/wof-add-files.go
 	@GOPATH=$(GOPATH) go build -o bin/wof-clone-repos cmd/wof-clone-repos.go
 	@GOPATH=$(GOPATH) go build -o bin/wof-create-hook cmd/wof-create-hook.go
 	@GOPATH=$(GOPATH) go build -o bin/wof-update-hook cmd/wof-update-hook.go
