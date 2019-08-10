@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v27/github"
 	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"io/ioutil"
