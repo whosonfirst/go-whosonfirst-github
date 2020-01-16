@@ -1,10 +1,10 @@
-# github.com/briandowns/spinner v1.6.1
+# github.com/briandowns/spinner v1.8.0
 github.com/briandowns/spinner
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
 # github.com/golang/protobuf v1.2.0
 github.com/golang/protobuf/proto
-# github.com/google/go-github/v27 v27.0.4
+# github.com/google/go-github/v27 v27.0.6
 github.com/google/go-github/v27/github
 # github.com/google/go-querystring v1.0.0
 github.com/google/go-querystring/query
@@ -25,7 +25,7 @@ golang.org/x/crypto/openpgp/elgamal
 # golang.org/x/net v0.0.0-20190311183353-d8887717615a
 golang.org/x/net/context/ctxhttp
 golang.org/x/net/context
-# golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
+# golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
 # golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223
