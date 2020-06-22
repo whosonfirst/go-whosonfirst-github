@@ -67,19 +67,34 @@ func ListReposWithCallback(org string, opts *ListOptions, cb func(repo *github.R
 			return err
 		}
 
+		log.Println("WTF", opts.Exclude)
+
 		for _, r := range possible {
 
+			has_prefix := false
+			is_excluded := false
+
 			for _, prefix := range opts.Prefix {
-				if !strings.HasPrefix(*r.Name, prefix) {
-					continue
+				if strings.HasPrefix(*r.Name, prefix) {
+					has_prefix = true
+					break
 				}
+			}
+
+			if !has_prefix {
+				continue
 			}
 
 			for _, prefix := range opts.Exclude {
 
 				if strings.HasPrefix(*r.Name, prefix) {
-					continue
+					is_excluded = true
+					break
 				}
+			}
+
+			if is_excluded {
+				continue
 			}
 
 			if opts.Forked && !*r.Fork {
