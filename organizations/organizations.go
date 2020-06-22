@@ -67,8 +67,6 @@ func ListReposWithCallback(org string, opts *ListOptions, cb func(repo *github.R
 			return err
 		}
 
-		log.Println("WTF", opts.Exclude)
-
 		for _, r := range possible {
 
 			has_prefix := false
