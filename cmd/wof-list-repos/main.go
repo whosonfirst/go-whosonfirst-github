@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 	"github.com/whosonfirst/iso8601duration"
 	"log"
@@ -14,9 +15,14 @@ import (
 
 func main() {
 
+	var prefix multi.MultiString
+	flag.Var(&prefix, "prefix", "Limit repositories to only those with this prefix")
+
+	var exclude multi.MultiString
+	flag.Var(&exclude, "exclude", "Exclude repositories with this prefix")
+
 	org := flag.String("org", "whosonfirst-data", "The name of the organization to clone repositories from")
-	prefix := flag.String("prefix", "whosonfirst-data", "Limit repositories to only those with this prefix")
-	exclude := flag.String("exclude", "", "Exclude repositories with this prefix")
+
 	updated_since := flag.String("updated-since", "", "A valid Unix timestamp or an ISO8601 duration string (months are currently not supported)")
 	forked := flag.Bool("forked", false, "Only include repositories that have been forked")
 	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
@@ -26,8 +32,8 @@ func main() {
 
 	opts := organizations.NewDefaultListOptions()
 
-	opts.Prefix = *prefix
-	opts.Exclude = *exclude
+	opts.Prefix = prefix
+	opts.Exclude = exclude
 	opts.Forked = *forked
 	opts.NotForked = *not_forked
 	opts.AccessToken = *token

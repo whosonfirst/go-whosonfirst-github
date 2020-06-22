@@ -9,8 +9,8 @@ import (
 )
 
 type ListOptions struct {
-	Prefix      string
-	Exclude     string
+	Prefix      []string
+	Exclude     []string
 	Forked      bool
 	NotForked   bool
 	AccessToken string
@@ -21,8 +21,8 @@ type ListOptions struct {
 func NewDefaultListOptions() *ListOptions {
 
 	opts := ListOptions{
-		Prefix:      "",
-		Exclude:     "",
+		Prefix:      []string{},
+		Exclude:     []string{},
 		Forked:      false,
 		NotForked:   false,
 		AccessToken: "",
@@ -69,12 +69,17 @@ func ListReposWithCallback(org string, opts *ListOptions, cb func(repo *github.R
 
 		for _, r := range possible {
 
-			if opts.Prefix != "" && !strings.HasPrefix(*r.Name, opts.Prefix) {
-				continue
+			for _, prefix := range opts.Prefix {
+				if !strings.HasPrefix(*r.Name, prefix) {
+					continue
+				}
 			}
 
-			if opts.Exclude != "" && strings.HasPrefix(*r.Name, opts.Exclude) {
-				continue
+			for _, prefix := range opts.Exclude {
+
+				if strings.HasPrefix(*r.Name, prefix) {
+					continue
+				}
 			}
 
 			if opts.Forked && !*r.Fork {
