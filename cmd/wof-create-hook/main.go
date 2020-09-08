@@ -9,25 +9,29 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/briandowns/spinner"
 	"github.com/google/go-github/v27/github"
+	"github.com/sfomuseum/go-flags/multi"
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
-	"strings"
-	"time"
 )
 
 func main() {
 
-	org := flag.String("org", "", "")
-	repo := flag.String("repo", "", "")
-	token := flag.String("token", "", "...")
-	prefix := flag.String("prefix", "", "Limit repositories to only those with this prefix")
+	org := flag.String("org", "", "The GitHub organization to create webhookd in.")
+	token := flag.String("token", "", "A valid GitHub API access token.")
 
-	// name := flag.String("hook-name", "web", "")
-	url := flag.String("hook-url", "", "")
-	content_type := flag.String("hook-content-type", "json", "")
-	secret := flag.String("hook-secret", "", "")
+	url := flag.String("hook-url", "", "A valid webhook URL.")
+	content_type := flag.String("hook-content-type", "json", "The content type for your webhook.")
+	secret := flag.String("hook-secret", "", "The secret for your webhook.")
+
+	var prefix multi.MultiString
+	flag.Var(&prefix, "prefix", "Limit repositories to only those with this prefix")
+
+	var exclude multi.MultiString
+	flag.Var(&exclude, "exclude", "Exclude repositories with this prefix")
+
+	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't create webhooks.")
 
 	flag.Parse()
 
@@ -41,119 +45,68 @@ func main() {
 		log.Fatal(err)
 	}
 
-	config := make(map[string]interface{})
+	hook_config := make(map[string]interface{})
 
-	config["url"] = *url
-	config["content_type"] = *content_type
-	config["secret"] = *secret
+	hook_config["url"] = *url
+	hook_config["content_type"] = *content_type
+	hook_config["secret"] = *secret
 
 	hook := github.Hook{
 		// Name:   name,
-		Config: config,
+		Config: hook_config,
 	}
 
-	if *repo == "" {
+	opts := organizations.NewDefaultListOptions()
 
-		_, _, err = client.Organizations.CreateHook(ctx, *org, &hook)
+	opts.Prefix = prefix
+	opts.Exclude = exclude
+	// opts.Forked = *forked
+	// opts.NotForked = *not_forked
+	opts.AccessToken = *token
+
+	repos, err := organizations.ListRepos(*org, opts)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, r := range repos {
+
+		has_hook := false
+
+		hooks_opts := github.ListOptions{PerPage: 100}
+
+		hooks, _, err := client.Repositories.ListHooks(ctx, *org, r, &hooks_opts)
 
 		if err != nil {
 			log.Fatal(err)
 		}
 
-	} else {
+		for _, h := range hooks {
 
-		has_hook := make(map[string]bool)
-
-		repos := make([]string, 0)
-
-		if *repo == "*" {
-
-			done := make(chan bool)
-
-			go func() {
-
-				sp := spinner.New(spinner.CharSets[38], 200*time.Millisecond)
-				sp.Prefix = "fetching repo list..."
-				sp.Start()
-
-				for {
-
-					select {
-					case <-done:
-						sp.Stop()
-						return
-					}
-				}
-			}()
-
-			repos_opts := &github.RepositoryListByOrgOptions{
-				ListOptions: github.ListOptions{PerPage: 100},
+			if h.Config["url"] == *url {
+				has_hook = true
+				break
 			}
-
-			for {
-
-				repos_list, repos_rsp, err := client.Repositories.ListByOrg(ctx, *org, repos_opts)
-
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				for _, r := range repos_list {
-
-					if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
-						continue
-					}
-
-					repos = append(repos, *r.Name)
-
-					hooks_opts := github.ListOptions{PerPage: 100}
-
-					hooks, _, err := client.Repositories.ListHooks(ctx, *org, *r.Name, &hooks_opts)
-
-					if err != nil {
-						log.Fatal(err)
-					}
-
-					for _, h := range hooks {
-
-						if h.Config["url"] == *url {
-							has_hook[*r.Name] = true
-							break
-						}
-					}
-
-				}
-
-				if repos_rsp.NextPage == 0 {
-					break
-				}
-
-				repos_opts.ListOptions.Page = repos_rsp.NextPage
-			}
-
-			done <- true
-
-		} else {
-			repos = append(repos, *repo)
 		}
 
-		for _, r := range repos {
-
-			_, ok := has_hook[r]
-
-			if ok {
-				log.Println(fmt.Sprintf("webhook already configured for %s, skipping", r))
-				continue
-			}
-
-			_, _, err = client.Repositories.CreateHook(ctx, *org, r, &hook)
-
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			log.Println(fmt.Sprintf("created webhook for %s", r))
+		if has_hook {
+			log.Println(fmt.Sprintf("webhook already configured for %s, skipping", r))
+			continue
 		}
+
+		if *dryrun {
+			log.Printf("Create Webhook for %s\n", r)
+			continue
+		}
+
+		_, _, err = client.Repositories.CreateHook(ctx, *org, r, &hook)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Println(fmt.Sprintf("created webhook for %s", r))
 	}
 
 }

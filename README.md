@@ -20,26 +20,44 @@ _All of the webhook tools need some documentation loving..._
 
 #### wof-create-hook
 
-_Please write me_
+```
+> ./bin/wof-create-hook -h
+Usage of ./bin/wof-create-hook:
+  -dryrun
+    	Go through the motions but don't create webhooks.
+  -exclude value
+    	Exclude repositories with this prefix
+  -hook-content-type string
+    	The content type for your webhook. (default "json")
+  -hook-secret string
+    	The secret for your webhook.
+  -hook-url string
+    	A valid webhook URL.
+  -org string
+    	The GitHub organization to create webhookd in.
+  -prefix value
+    	Limit repositories to only those with this prefix
+  -token string
+    	A valid GitHub API access token.
+```
+
+For example:
 
 ```
-./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo whosonfirst-data-venue-us-il
-```
-
-You can also create webhooks for all of the repositories in an organization by passing the `-repo '*'` flag. You can still filter the list of repos by setting the `-prefix` flag.
-
-```
-./bin/wof-create-hook -token {TOKEN} -hook-url {URL} -hook-secret {SECRET} -org whosonfirst-data -repo '*' -prefix whosonfirst-data
-fetching repo list...🕓 
-2017/04/05 15:42:24 webhook already configured for whosonfirst-data, skipping
-2017/04/05 15:42:24 created webhook for whosonfirst-data-venue-us-wv
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ne
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-wi
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-nv
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ar
-2017/04/05 15:42:25 created webhook for whosonfirst-data-venue-us-ms
-
-...and so on
+$> ./bin/wof-create-hook -org sfomuseum-data -hook-secret {SECRET} -hook-url {WEBHOOK_URL} -prefix sfomuseum-data -exclude sfomuseum-data-flights -exclude sfomuseum-data-faa -token {GITHUB_TOKEN}
+2020/09/08 16:46:17 created webhook for sfomuseum-data-whosonfirst
+2020/09/08 16:46:18 created webhook for sfomuseum-data-publicart
+2020/09/08 16:46:19 created webhook for sfomuseum-data-architecture
+2020/09/08 16:46:20 created webhook for sfomuseum-data-maps
+2020/09/08 16:46:21 created webhook for sfomuseum-data-exhibition
+2020/09/08 16:46:22 created webhook for sfomuseum-data-enterprise
+2020/09/08 16:46:23 created webhook for sfomuseum-data-aircraft
+2020/09/08 16:46:24 created webhook for sfomuseum-data-media
+2020/09/08 16:46:25 created webhook for sfomuseum-data-media-flickr
+2020/09/08 16:46:26 created webhook for sfomuseum-data-testing
+2020/09/08 16:46:28 created webhook for sfomuseum-data-collection-classifications
+2020/09/08 16:46:29 created webhook for sfomuseum-data-media-collection
+2020/09/08 16:46:29 created webhook for sfomuseum-data-collection
 ```
 
 #### wof-list-hooks
