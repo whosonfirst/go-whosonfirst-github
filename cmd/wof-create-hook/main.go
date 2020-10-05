@@ -31,6 +31,9 @@ func main() {
 	var exclude multi.MultiString
 	flag.Var(&exclude, "exclude", "Exclude repositories with this prefix")
 
+	var repos multi.MultiString
+	flag.Var(&repos, "repo", "A valid GitHub repository name")
+
 	dryrun := flag.Bool("dryrun", false, "Go through the motions but don't create webhooks.")
 
 	flag.Parse()
@@ -64,10 +67,15 @@ func main() {
 	// opts.NotForked = *not_forked
 	opts.AccessToken = *token
 
-	repos, err := organizations.ListRepos(*org, opts)
+	if len(repos) == 0 {
 
-	if err != nil {
-		log.Fatal(err)
+		r, err := organizations.ListRepos(*org, opts)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		repos = r
 	}
 
 	for _, r := range repos {
