@@ -1,4 +1,4 @@
-# github.com/briandowns/spinner v1.11.1
+# github.com/briandowns/spinner v1.16.0
 github.com/briandowns/spinner
 # github.com/fatih/color v1.7.0
 github.com/fatih/color
@@ -12,7 +12,7 @@ github.com/google/go-querystring/query
 github.com/mattn/go-colorable
 # github.com/mattn/go-isatty v0.0.8
 github.com/mattn/go-isatty
-# github.com/sfomuseum/go-flags v0.4.2
+# github.com/sfomuseum/go-flags v0.8.2
 github.com/sfomuseum/go-flags/multi
 # github.com/whosonfirst/iso8601duration v0.0.0-20150204201828-8da3af7a2a61
 github.com/whosonfirst/iso8601duration
@@ -27,7 +27,7 @@ golang.org/x/crypto/openpgp/s2k
 # golang.org/x/net v0.0.0-20200822124328-c89045814202
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
-# golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
+# golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
 # golang.org/x/sys v0.0.0-20200803210538-64077c9b5642
