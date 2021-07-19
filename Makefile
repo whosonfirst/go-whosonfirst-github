@@ -1,8 +1,3 @@
-fmt:
-	# go fmt cmd/*.go
-	go fmt util/*.go
-	go fmt organizations/*.go
-
 tools:
 	go build -mod vendor -o bin/wof-add-files cmd/wof-add-files/main.go
 	go build -mod vendor -o bin/wof-clone-repos cmd/wof-clone-repos/main.go
