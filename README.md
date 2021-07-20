@@ -2,15 +2,9 @@
 
 Go package for working with Who's On First GitHub repositories.
 
-## Install
+## Important
 
-You will need to have both `Go` (specifically version [1.12](https://golang.org/dl/) or higher) and the `make` programs installed on your computer. Assuming you do just type:
-
-```
-make tools
-```
-
-All of this package's dependencies are bundled with the code in the `vendor` directory.
+Here's a weird thing. If you try to use this code, either via the CLI tools or in your own packages, using `go run ... ` it will fail with incomprehensible "bad file descriptor" errors whenever the `google/go-github` code tries to make an HTTP request. If you compile things and run the same code as a binary everything works fine. Computers, amirite?
 
 ## Tools
 
