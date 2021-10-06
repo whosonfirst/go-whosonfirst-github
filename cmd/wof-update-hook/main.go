@@ -8,12 +8,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/briandowns/spinner"
 	"github.com/google/go-github/v27/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -51,24 +49,6 @@ func main() {
 		repos := make([]string, 0)
 
 		if *repo == "*" {
-
-			done := make(chan bool)
-
-			go func() {
-
-				sp := spinner.New(spinner.CharSets[38], 200*time.Millisecond)
-				sp.Prefix = "fetching repo list..."
-				sp.Start()
-
-				for {
-
-					select {
-					case <-done:
-						sp.Stop()
-						return
-					}
-				}
-			}()
 
 			repos_opts := &github.RepositoryListByOrgOptions{
 				ListOptions: github.ListOptions{PerPage: 100},
@@ -114,8 +94,6 @@ func main() {
 
 				repos_opts.ListOptions.Page = repos_rsp.NextPage
 			}
-
-			done <- true
 
 		} else {
 
