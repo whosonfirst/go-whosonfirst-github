@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"flag"
-	"github.com/whosonfirst/go-whosonfirst-github/organizations"	
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"
+	"log"
 )
 
 func main() {
@@ -23,9 +23,9 @@ func main() {
 
 	opts := &organizations.CreateOptions{
 		AccessToken: *token,
-		Name: *name,
+		Name:        *name,
 		Description: *description,
-		Private: *private,
+		Private:     *private,
 	}
 
 	err := organizations.CreateRepo(*org, opts)

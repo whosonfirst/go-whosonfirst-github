@@ -21,9 +21,9 @@ type ListOptions struct {
 
 type CreateOptions struct {
 	AccessToken string
-	Name string
+	Name        string
 	Description string
-	Private bool
+	Private     bool
 }
 
 func NewDefaultListOptions() *ListOptions {
@@ -41,12 +41,12 @@ func NewDefaultListOptions() *ListOptions {
 	return &opts
 }
 
-// CreateRepo is a helper method for creating a new 
+// CreateRepo is a helper method for creating a new
 func CreateRepo(org_name string, opts *CreateOptions) error {
 
-	
 	// https://docs.github.com/en/rest/reference/repos#create-an-organization-repository
 	// https://github.com/google/go-github/blob/v17.0.0/example/newrepo/main.go
+	// https://github.com/google/go-github/blob/v17.0.0/github/repos.go#L262
 
 	client, ctx, err := util.NewClientAndContext(opts.AccessToken)
 
@@ -54,20 +54,13 @@ func CreateRepo(org_name string, opts *CreateOptions) error {
 		return fmt.Errorf("Failed to create new client, %w", err)
 	}
 
-	org, _, err := client.Organizations.Get(ctx, org_name)
-
-	if err != nil {
-		return fmt.Errorf("Failed to retrieve organization, %w", err)
-	}
-	
 	r := &github.Repository{
-		Name: &opts.Name,
-		Private: &opts.Private,
+		Name:        &opts.Name,
+		Private:     &opts.Private,
 		Description: &opts.Description,
-		Organization: org,
 	}
-	
-	_, _, err = client.Repositories.Create(ctx, "", r)
+
+	_, _, err = client.Repositories.Create(ctx, org_name, r)
 
 	if err != nil {
 		return fmt.Errorf("Failed to create repository, %w", err)
