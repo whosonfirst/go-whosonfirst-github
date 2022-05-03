@@ -27,6 +27,8 @@ func main() {
 	forked := flag.Bool("forked", false, "Only include repositories that have been forked")
 	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
 
+	hook_prefix := flag.String("hook-prefix", "", "The prefix for the URL that a webhook event will be sent to.")
+
 	flag.Parse()
 
 	client, ctx, err := util.NewClientAndContext(*token)
@@ -104,10 +106,25 @@ func main() {
 
 			for _, h := range hooks {
 
-				log.Println(fmt.Sprintf("%s has webhook %s (active: %t)", *r.Name, *h.URL, *h.Active))
+				if *hook_prefix != "" {
+
+					v, ok := h.Config["url"]
+
+					if !ok {
+						continue
+					}
+
+					if !strings.HasPrefix(v.(string), *hook_prefix) {
+						continue
+					}
+				}
+
+				fmt.Println(*h.ID)
+				// log.Println(fmt.Sprintf("%s has webhook %s (%d) (active: %t)", *r.Name, *h.URL, *h.ID, *h.Active))
 
 				// please add a flag to toggle display of the actual webhook URL...
 				// log.Println(fmt.Sprintf("%s has webhook %s (active: %t)", *r.Name, h.Config["url"], *h.Active))
+
 			}
 
 		}

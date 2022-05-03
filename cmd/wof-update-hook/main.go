@@ -1,3 +1,5 @@
+// wof-update-hook is a command line tool to update one or more GitHub webhooks. For example.
+//	$> ./bin/wof-update-hook -org sfomuseum-data -prefix sfomuseum-data -token {TOKEN} -hook-url https://{HOST}/webhookd/dist -hook-active=false
 package main
 
 // https://developer.github.com/v3/repos/hooks/#edit-a-hook
@@ -14,17 +16,25 @@ import (
 	"strings"
 )
 
+type update struct {
+	Repo string
+	Hook *github.Hook
+}
+
 func main() {
 
 	org := flag.String("org", "", "")
-	repo := flag.String("repo", "", "")
 	token := flag.String("token", "", "...")
 	prefix := flag.String("prefix", "", "Limit repositories to only those with this prefix")
 
-	// name := flag.String("hook-name", "web", "")
 	url := flag.String("hook-url", "", "")
 	content_type := flag.String("hook-content-type", "json", "")
 	secret := flag.String("hook-secret", "", "")
+
+	active := flag.Bool("hook-active", true, "")
+	delete := flag.Bool("delete", false, "")
+
+	dryrun := flag.Bool("dryrun", false, "")
 
 	flag.Parse()
 
@@ -38,100 +48,96 @@ func main() {
 		log.Fatal(err)
 	}
 
-	lookup := make(map[string]*github.Hook)
+	updates := make([]update, 0)
 
-	if *repo == "" {
+	repos_opts := &github.RepositoryListByOrgOptions{
+		ListOptions: github.ListOptions{PerPage: 100},
+	}
 
-		log.Fatal("Organizations are not supported yet")
+	for {
 
-	} else {
+		repos_list, repos_rsp, err := client.Repositories.ListByOrg(ctx, *org, repos_opts)
 
-		repos := make([]string, 0)
-
-		if *repo == "*" {
-
-			repos_opts := &github.RepositoryListByOrgOptions{
-				ListOptions: github.ListOptions{PerPage: 100},
-			}
-
-			for {
-
-				repos_list, repos_rsp, err := client.Repositories.ListByOrg(ctx, *org, repos_opts)
-
-				if err != nil {
-					log.Fatal(err)
-				}
-
-				for _, r := range repos_list {
-
-					if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
-						continue
-					}
-
-					repos = append(repos, *r.Name)
-
-					hooks_opts := github.ListOptions{PerPage: 100}
-
-					hooks, _, err := client.Repositories.ListHooks(ctx, *org, *r.Name, &hooks_opts)
-
-					if err != nil {
-						log.Fatal(err)
-					}
-
-					for _, h := range hooks {
-
-						if h.Config["url"] == *url {
-							lookup[*r.Name] = h
-							break
-						}
-					}
-
-				}
-
-				if repos_rsp.NextPage == 0 {
-					break
-				}
-
-				repos_opts.ListOptions.Page = repos_rsp.NextPage
-			}
-
-		} else {
-
-			log.Fatal("Please get hooks for a single repo")
-			repos = append(repos, *repo)
+		if err != nil {
+			log.Fatal(err)
 		}
 
-		for _, r := range repos {
+		for _, r := range repos_list {
 
-			hook, ok := lookup[r]
-
-			if !ok {
-				log.Println(fmt.Sprintf("webhook not configured for %s, skipping", r))
+			if *prefix != "" && !strings.HasPrefix(*r.Name, *prefix) {
 				continue
 			}
 
-			if *secret != "" {
-				hook.Config["secret"] = *secret
+			hooks_opts := github.ListOptions{PerPage: 100}
+
+			hooks, _, err := client.Repositories.ListHooks(ctx, *org, *r.Name, &hooks_opts)
+
+			if err != nil {
+				log.Fatal(err)
 			}
 
-			if *content_type != "" {
-				hook.Config["content_type"] = *content_type
-			}
+			for _, h := range hooks {
 
-			/*
-				if *name != "" {
-					hook.Name = name
+				hook_url := h.Config["url"].(string)
+
+				if strings.HasPrefix(hook_url, *url) {
+
+					u := update{
+						Repo: *r.Name,
+						Hook: h,
+					}
+
+					updates = append(updates, u)
 				}
-			*/
+			}
 
-			_, _, err = client.Repositories.EditHook(ctx, *org, r, *hook.ID, hook)
+		}
+
+		if repos_rsp.NextPage == 0 {
+			break
+		}
+
+		repos_opts.ListOptions.Page = repos_rsp.NextPage
+	}
+
+	for _, u := range updates {
+
+		r := u.Repo
+		hook := u.Hook
+
+		if *secret != "" {
+			hook.Config["secret"] = *secret
+		}
+
+		if *content_type != "" {
+			hook.Config["content_type"] = *content_type
+		}
+
+		hook.Active = active
+
+		if *dryrun {
+			log.Printf("DRYRUN %d (%s) %v\n", *hook.ID, r, hook)
+			continue
+		}
+
+		if *delete {
+
+			_, err := client.Repositories.DeleteHook(ctx, *org, r, *hook.ID)
 
 			if err != nil {
 				log.Fatal(fmt.Sprintf("failed to edit webhook for %s, because %s", r, err.Error()))
 			}
 
-			log.Println(fmt.Sprintf("edited webhook for %s", r))
-		}
-	}
+		} else {
 
+			_, _, err := client.Repositories.EditHook(ctx, *org, r, *hook.ID, hook)
+
+			if err != nil {
+				log.Fatal(fmt.Sprintf("failed to edit webhook for %s, because %s", r, err.Error()))
+			}
+
+		}
+
+		log.Println(fmt.Sprintf("edited webhook for %s", r))
+	}
 }
