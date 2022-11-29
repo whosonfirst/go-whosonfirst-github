@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-whosonfirst-github/organizations"
-	"github.com/whosonfirst/iso8601duration"
+	"github.com/sfomuseum/iso8601duration"
 	"log"
 	"os"
 	"regexp"

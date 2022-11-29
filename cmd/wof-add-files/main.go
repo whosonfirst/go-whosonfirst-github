@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/google/go-github/v27/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
