@@ -13,7 +13,7 @@ github.com/sfomuseum/go-flags/multi
 # github.com/sfomuseum/iso8601duration v1.1.0
 ## explicit; go 1.18
 github.com/sfomuseum/iso8601duration
-# golang.org/x/crypto v0.1.0
+# golang.org/x/crypto v0.0.0-20210817164053-32db794688a5
 ## explicit; go 1.17
 golang.org/x/crypto/cast5
 golang.org/x/crypto/openpgp
@@ -22,11 +22,10 @@ golang.org/x/crypto/openpgp/elgamal
 golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
-# golang.org/x/net v0.7.0
+# golang.org/x/net v0.10.0
 ## explicit; go 1.17
 golang.org/x/net/context
-golang.org/x/net/context/ctxhttp
-# golang.org/x/oauth2 v0.3.0
+# golang.org/x/oauth2 v0.8.0
 ## explicit; go 1.17
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
