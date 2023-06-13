@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 	"log"
+
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"	
 )
 
 func main() {

@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/google/go-github/v48/github"
-	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"os"
 	"os/exec"
@@ -14,6 +12,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/google/go-github/v48/github"
+	"github.com/whosonfirst/go-whosonfirst-github/util"	
 )
 
 // https://godoc.org/github.com/google/go-github/github#Repository

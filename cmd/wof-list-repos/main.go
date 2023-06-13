@@ -3,14 +3,15 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/sfomuseum/go-flags/multi"
-	"github.com/whosonfirst/go-whosonfirst-github/organizations"
-	"github.com/sfomuseum/iso8601duration"
 	"log"
 	"os"
 	"regexp"
 	"strconv"
 	"time"
+
+	"github.com/sfomuseum/go-flags/multi"
+	"github.com/sfomuseum/iso8601duration"
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"	
 )
 
 func main() {

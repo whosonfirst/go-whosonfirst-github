@@ -9,11 +9,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/google/go-github/v48/github"
-	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/google/go-github/v48/github"
+	"github.com/whosonfirst/go-whosonfirst-github/util"	
 )
 
 func main() {

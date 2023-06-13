@@ -1,4 +1,5 @@
 // wof-update-hook is a command line tool to update one or more GitHub webhooks. For example.
+//
 //	$> ./bin/wof-update-hook -org sfomuseum-data -prefix sfomuseum-data -token {TOKEN} -hook-url https://{HOST}/webhookd/dist -hook-active=false
 package main
 
@@ -10,10 +11,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/google/go-github/v48/github"
-	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"log"
 	"strings"
+
+	"github.com/google/go-github/v48/github"
+	"github.com/whosonfirst/go-whosonfirst-github/util"	
 )
 
 type update struct {

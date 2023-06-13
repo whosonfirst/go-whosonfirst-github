@@ -8,3 +8,4 @@ tools:
 	go build -mod $(GOMOD) -ldflags="-s -w" -o bin/wof-update-hook cmd/wof-update-hook/main.go
 	go build -mod $(GOMOD) -ldflags="-s -w" -o bin/wof-list-repos cmd/wof-list-repos/main.go
 	go build -mod $(GOMOD) -ldflags="-s -w" -o bin/wof-list-hooks cmd/wof-list-hooks/main.go
+	go build -mod $(GOMOD) -ldflags="-s -w" -o bin/wof-rate-limits cmd/wof-rate-limits/main.go
