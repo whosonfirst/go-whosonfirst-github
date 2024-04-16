@@ -11,7 +11,7 @@ import (
 
 	"github.com/sfomuseum/go-flags/multi"
 	"github.com/sfomuseum/iso8601duration"
-	"github.com/whosonfirst/go-whosonfirst-github/organizations"	
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 )
 
 func main() {
@@ -29,6 +29,10 @@ func main() {
 	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
 	token := flag.String("token", "", "A valid GitHub API access token")
 
+	ensure_commits := flag.Bool("ensure-commits", false, "Ensure that 1 or more files have been updated in the last commit")
+	
+	debug := flag.Bool("debug", false, "Enable debug logging")
+
 	flag.Parse()
 
 	opts := organizations.NewDefaultListOptions()
@@ -38,7 +42,9 @@ func main() {
 	opts.Forked = *forked
 	opts.NotForked = *not_forked
 	opts.AccessToken = *token
-
+	opts.Debug = *debug
+	opts.EnsureCommits = *ensure_commits
+	
 	if *updated_since != "" {
 
 		var since time.Time

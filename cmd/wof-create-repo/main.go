@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 
-	"github.com/whosonfirst/go-whosonfirst-github/organizations"	
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"
 )
 
 func main() {

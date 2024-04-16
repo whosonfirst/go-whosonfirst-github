@@ -14,7 +14,7 @@ import (
 	"time"
 
 	"github.com/google/go-github/v48/github"
-	"github.com/whosonfirst/go-whosonfirst-github/util"	
+	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
 // https://godoc.org/github.com/google/go-github/github#Repository

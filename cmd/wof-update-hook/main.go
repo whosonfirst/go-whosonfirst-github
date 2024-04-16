@@ -15,7 +15,7 @@ import (
 	"strings"
 
 	"github.com/google/go-github/v48/github"
-	"github.com/whosonfirst/go-whosonfirst-github/util"	
+	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
 type update struct {
