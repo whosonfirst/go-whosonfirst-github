@@ -30,7 +30,7 @@ func main() {
 	token := flag.String("token", "", "A valid GitHub API access token")
 
 	ensure_commits := flag.Bool("ensure-commits", false, "Ensure that 1 or more files have been updated in the last commit")
-	
+
 	debug := flag.Bool("debug", false, "Enable debug logging")
 
 	flag.Parse()
@@ -44,7 +44,7 @@ func main() {
 	opts.AccessToken = *token
 	opts.Debug = *debug
 	opts.EnsureCommits = *ensure_commits
-	
+
 	if *updated_since != "" {
 
 		var since time.Time
