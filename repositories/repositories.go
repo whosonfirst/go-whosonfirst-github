@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "log"
 	"log/slog"
+	"regexp"
 	"sync"
 	"time"
 
@@ -20,6 +21,7 @@ type ListCommitFilesOptions struct {
 	Repo        string
 	Since       *time.Time
 	MaxCommits  int
+	Matching    *regexp.Regexp
 }
 
 func ListCommitFiles(ctx context.Context, opts *ListCommitFilesOptions) ([]string, error) {
@@ -83,6 +85,9 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 		}
 
 		for {
+
+			slog.Debug("Fetch commits", "sha", *rc.SHA, "page", list_opts.Page)
+
 			c, rsp, err := client.Repositories.GetCommit(ctx, opts.Org, opts.Repo, *rc.SHA, list_opts)
 
 			if err != nil {
@@ -91,6 +96,13 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 
 			for _, f := range c.Files {
 
+				if opts.Matching != nil {
+
+					if !opts.Matching.MatchString(*f.Filename) {
+						continue
+					}
+				}
+
 				err := cb(ctx, f)
 
 				if err != nil {
@@ -98,10 +110,10 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 				}
 			}
 
-			slog.Error("Finished processing page", "current", page, "next", rsp.NextPage, "last", rsp.LastPage)
+			slog.Debug("Finished processing page", "current", page, "next", rsp.NextPage, "last", rsp.LastPage)
 
 			if page < rsp.LastPage {
-				page = rsp.NextPage
+				list_opts.Page = rsp.NextPage
 			} else {
 				break
 			}

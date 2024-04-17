@@ -1,5 +1,7 @@
 package main
 
+// ./bin/wof-list-updates -max-commits 4 -org whosonfirst-data -repo whosonfirst-data-admin-us
+
 import (
 	"context"
 	"flag"
@@ -22,6 +24,7 @@ func main() {
 	updated_since := flag.String("updated-since", "", "A valid Unix timestamp or an ISO8601 duration string (months are currently not supported)")
 	token := flag.String("token", "", "A valid GitHub API access token")
 
+	ensure_geojson := flag.Bool("ensure-geojson", true, "Ensure that commits are for files ending in .geojson")
 	max_commits := flag.Int("max-commits", 1, "...")
 	flag.Parse()
 
@@ -32,6 +35,17 @@ func main() {
 		Org:         *org,
 		Repo:        *repo,
 		MaxCommits:  *max_commits,
+	}
+
+	if *ensure_geojson {
+
+		re, err := regexp.Compile(`.*\.geojson$`)
+
+		if err != nil {
+			log.Fatalf("Failed to compile ensure geojson pattern, %v", err)
+		}
+
+		opts.Matching = re
 	}
 
 	if *updated_since != "" {
