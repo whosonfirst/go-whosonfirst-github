@@ -9,4 +9,5 @@ tools:
 	go build -mod $(GOMOD) -ldflags="$(LDFLAGS)" -o bin/wof-update-hook cmd/wof-update-hook/main.go
 	go build -mod $(GOMOD) -ldflags="$(LDFLAGS)" -o bin/wof-list-repos cmd/wof-list-repos/main.go
 	go build -mod $(GOMOD) -ldflags="$(LDFLAGS)" -o bin/wof-list-hooks cmd/wof-list-hooks/main.go
+	go build -mod $(GOMOD) -ldflags="$(LDFLAGS)" -o bin/wof-list-updates cmd/wof-list-updates/main.go
 	go build -mod $(GOMOD) -ldflags="$(LDFLAGS)" -o bin/wof-rate-limits cmd/wof-rate-limits/main.go

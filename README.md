@@ -58,6 +58,40 @@ $> ./bin/wof-create-hook -org sfomuseum-data -hook-secret {SECRET} -hook-url {WE
 
 _Please write me_
 
+#### wof-list-updates
+
+List all the files that have been updated in a given Who's On First data style repositories for (n) commits.
+
+```
+$> ./bin/wof-list-updates -h
+Usage of ./bin/wof-list-updates:
+  -ensure-geojson
+    	Ensure that commits are for files ending in .geojson (default true)
+  -max-commits int
+    	... (default 1)
+  -org string
+    	The name of the organization to query (default "whosonfirst-data")
+  -repo string
+    	The name of the repository to query
+  -token string
+    	A valid GitHub API access token
+  -updated-since string
+    	A valid Unix timestamp or an ISO8601 duration string (months are currently not supported)
+```
+
+For example:
+
+```
+> ./bin/wof-list-updates \
+	-max-commits 4 \
+	-org whosonfirst-data \
+	-repo whosonfirst-data-admin-us \
+	-token {TOKEN} \
+    | wc -l
+    
+3001
+```
+
 #### wof-update-hook
 
 _Please write me_
