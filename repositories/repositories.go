@@ -72,21 +72,38 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 
 		slog.Debug("Commit", "sha", *rc.SHA)
 
-		// To do: pagination wah-wah...
+		// https://pkg.go.dev/github.com/google/go-github/v48/github#RepositoriesService.GetCommit
+		// https://pkg.go.dev/github.com/google/go-github/v48/github#Response
+		// https://pkg.go.dev/github.com/google/go-github/v48/github#ListOptions
 
-		list_opts := new(github.ListOptions)
-		c, _, err := client.Repositories.GetCommit(ctx, opts.Org, opts.Repo, *rc.SHA, list_opts)
+		page := 1
 
-		if err != nil {
-			return fmt.Errorf("Failed to get commit %s, %w", *rc.SHA, err)
+		list_opts := &github.ListOptions{
+			Page: page,
 		}
 
-		for _, f := range c.Files {
-
-			err := cb(ctx, f)
+		for {
+			c, rsp, err := client.Repositories.GetCommit(ctx, opts.Org, opts.Repo, *rc.SHA, list_opts)
 
 			if err != nil {
-				return fmt.Errorf("Failed to execute callback for %s", f.Filename)
+				return fmt.Errorf("Failed to get commit %s, %w", *rc.SHA, err)
+			}
+
+			for _, f := range c.Files {
+
+				err := cb(ctx, f)
+
+				if err != nil {
+					return fmt.Errorf("Failed to execute callback for %s", f.Filename)
+				}
+			}
+
+			slog.Error("Finished processing page", "current", page, "next", rsp.NextPage, "last", rsp.LastPage)
+
+			if page < rsp.LastPage {
+				page = rsp.NextPage
+			} else {
+				break
 			}
 		}
 
