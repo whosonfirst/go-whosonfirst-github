@@ -3,6 +3,9 @@ package repositories
 import (
 	"context"
 	"fmt"
+	_ "log"
+	"log/slog"
+	"sync"
 	"time"
 
 	"github.com/google/go-github/v48/github"
@@ -16,14 +19,15 @@ type ListCommitFilesOptions struct {
 	Org         string
 	Repo        string
 	Since       *time.Time
+	MaxCommits  int
 }
 
 func ListCommitFiles(ctx context.Context, opts *ListCommitFilesOptions) ([]string, error) {
 
-	files := make([]string, 0)
+	lookup := new(sync.Map)
 
 	cb := func(ctx context.Context, f *github.CommitFile) error {
-		files = append(files, *f.Filename)
+		lookup.Store(*f.Filename, true)
 		return nil
 	}
 
@@ -32,6 +36,14 @@ func ListCommitFiles(ctx context.Context, opts *ListCommitFilesOptions) ([]strin
 	if err != nil {
 		return nil, err
 	}
+
+	files := make([]string, 0)
+
+	lookup.Range(func(k interface{}, v interface{}) bool {
+		f := k.(string)
+		files = append(files, f)
+		return true
+	})
 
 	return files, nil
 }
@@ -56,7 +68,18 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 		return fmt.Errorf("Failed to list commits for %s, %w", opts.Repo, err)
 	}
 
-	for _, c := range commits {
+	for i, rc := range commits {
+
+		slog.Debug("Commit", "sha", *rc.SHA)
+
+		// To do: pagination wah-wah...
+
+		list_opts := new(github.ListOptions)
+		c, _, err := client.Repositories.GetCommit(ctx, opts.Org, opts.Repo, *rc.SHA, list_opts)
+
+		if err != nil {
+			return fmt.Errorf("Failed to get commit %s, %w", *rc.SHA, err)
+		}
 
 		for _, f := range c.Files {
 
@@ -65,6 +88,10 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 			if err != nil {
 				return fmt.Errorf("Failed to execute callback for %s", f.Filename)
 			}
+		}
+
+		if opts.MaxCommits > 0 && (i+1) >= opts.MaxCommits {
+			break
 		}
 	}
 
