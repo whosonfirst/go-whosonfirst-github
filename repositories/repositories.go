@@ -106,7 +106,7 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 				err := cb(ctx, f)
 
 				if err != nil {
-					return fmt.Errorf("Failed to execute callback for %s", f.Filename)
+					return fmt.Errorf("Failed to execute callback for %v", f.Filename)
 				}
 			}
 
