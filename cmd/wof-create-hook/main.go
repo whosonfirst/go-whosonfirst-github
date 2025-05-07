@@ -51,11 +51,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	hook_config := make(map[string]interface{})
-
-	hook_config["url"] = *url
-	hook_config["content_type"] = *content_type
-	hook_config["secret"] = *secret
+	hook_config := &github.HookConfig{
+		URL:         url,
+		ContentType: content_type,
+		Secret:      secret,
+	}
 
 	hook := github.Hook{
 		// Name:   name,
@@ -97,7 +97,7 @@ func main() {
 
 		for _, h := range hooks {
 
-			if h.Config["url"] == *url {
+			if h.Config.URL == url {
 				has_hook = true
 				break
 			}

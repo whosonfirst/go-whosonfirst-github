@@ -80,9 +80,9 @@ func main() {
 
 			for _, h := range hooks {
 
-				hook_url := h.Config["url"].(string)
+				hook_url := h.Config.URL
 
-				if strings.HasPrefix(hook_url, *url) {
+				if strings.HasPrefix(*hook_url, *url) {
 
 					u := update{
 						Repo: *r.Name,
@@ -108,11 +108,11 @@ func main() {
 		hook := u.Hook
 
 		if *secret != "" {
-			hook.Config["secret"] = *secret
+			hook.Config.Secret = secret
 		}
 
 		if *content_type != "" {
-			hook.Config["content_type"] = *content_type
+			hook.Config.ContentType = content_type
 		}
 
 		hook.Active = active
