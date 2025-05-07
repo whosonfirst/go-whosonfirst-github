@@ -29,6 +29,8 @@ func main() {
 	not_forked := flag.Bool("not-forked", false, "Only include repositories that have not been forked")
 	token := flag.String("token", "", "A valid GitHub API access token")
 
+	exclude_archived := flag.Bool("exclude-archived", false, "Exclude repos that have been archived.")
+
 	ensure_commits := flag.Bool("ensure-commits", false, "Ensure that 1 or more files have been updated in the last commit")
 
 	debug := flag.Bool("debug", false, "Enable debug logging")
@@ -44,6 +46,7 @@ func main() {
 	opts.AccessToken = *token
 	opts.Debug = *debug
 	opts.EnsureCommits = *ensure_commits
+	opts.ExcludeArchived = *exclude_archived
 
 	if *updated_since != "" {
 

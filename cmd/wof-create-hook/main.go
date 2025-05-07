@@ -32,6 +32,8 @@ func main() {
 	var exclude multi.MultiString
 	flag.Var(&exclude, "exclude", "Exclude repositories with this prefix")
 
+	exclude_archived := flag.Bool("exclude-archived", false, "Exclude repos that have been archived.")
+
 	var repos multi.MultiString
 	flag.Var(&repos, "repo", "A valid GitHub repository name")
 
@@ -64,6 +66,8 @@ func main() {
 
 	opts.Prefix = prefix
 	opts.Exclude = exclude
+	opts.ExcludeArchived = *exclude_archived
+
 	// opts.Forked = *forked
 	// opts.NotForked = *not_forked
 	opts.AccessToken = *token

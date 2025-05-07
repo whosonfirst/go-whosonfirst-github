@@ -12,14 +12,15 @@ import (
 )
 
 type ListOptions struct {
-	Prefix        []string
-	Exclude       []string
-	Forked        bool
-	NotForked     bool
-	AccessToken   string
-	PushedSince   *time.Time
-	Debug         bool
-	EnsureCommits bool
+	Prefix          []string
+	Exclude         []string
+	Forked          bool
+	NotForked       bool
+	ExcludeArchived bool
+	AccessToken     string
+	PushedSince     *time.Time
+	Debug           bool
+	EnsureCommits   bool
 }
 
 type CreateOptions struct {
@@ -32,13 +33,14 @@ type CreateOptions struct {
 func NewDefaultListOptions() *ListOptions {
 
 	opts := ListOptions{
-		Prefix:      []string{},
-		Exclude:     []string{},
-		Forked:      false,
-		NotForked:   false,
-		AccessToken: "",
-		PushedSince: nil,
-		Debug:       false,
+		Prefix:          []string{},
+		Exclude:         []string{},
+		Forked:          false,
+		NotForked:       false,
+		ExcludeArchived: false,
+		AccessToken:     "",
+		PushedSince:     nil,
+		Debug:           false,
 	}
 
 	return &opts
@@ -153,6 +155,10 @@ func ListReposWithCallback(org string, opts *ListOptions, cb func(repo *github.R
 			}
 
 			if opts.NotForked && *r.Fork {
+				continue
+			}
+
+			if opts.ExcludeArchived && *r.Archived {
 				continue
 			}
 

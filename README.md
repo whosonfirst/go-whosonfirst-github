@@ -21,6 +21,8 @@ Usage of ./bin/wof-create-hook:
     	Go through the motions but don't create webhooks.
   -exclude value
     	Exclude repositories with this prefix
+  -exclude-archived
+    	Exclude repos that have been archived.
   -hook-content-type string
     	The content type for your webhook. (default "json")
   -hook-secret string
@@ -31,6 +33,8 @@ Usage of ./bin/wof-create-hook:
     	The GitHub organization to create webhookd in.
   -prefix value
     	Limit repositories to only those with this prefix
+  -repo value
+    	A valid GitHub repository name
   -token string
     	A valid GitHub API access token.
 ```
@@ -141,22 +145,28 @@ Usage of ./bin/wof-clone-repos:
 Print (to STDOUT) the list of repository names for an organization.
 
 ```
-./bin/wof-list-repos -h
+> ./bin/wof-list-repos -h
 Usage of ./bin/wof-list-repos:
-  -exclude string
+  -debug
+    	Enable debug logging
+  -ensure-commits
+    	Ensure that 1 or more files have been updated in the last commit
+  -exclude value
     	Exclude repositories with this prefix
+  -exclude-archived
+    	Exclude repos that have been archived.
   -forked
     	Only include repositories that have been forked
   -not-forked
     	Only include repositories that have not been forked
   -org string
     	The name of the organization to clone repositories from (default "whosonfirst-data")
-  -prefix string
-    	Limit repositories to only those with this prefix (default "whosonfirst-data")
+  -prefix value
+    	Limit repositories to only those with this prefix
   -token string
     	A valid GitHub API access token
   -updated-since string
-    	A valid ISO8601 duration string (months are currently not supported)
+    	A valid Unix timestamp or an ISO8601 duration string (months are currently not supported)
 ```
 
 For example:
