@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/google/go-github/v48/github"
+	"github.com/google/go-github/v71/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
@@ -173,11 +173,11 @@ func ListReposWithCallback(org string, opts *ListOptions, cb func(repo *github.R
 				}
 			}
 
-			// https://pkg.go.dev/github.com/google/go-github/v48@v48.2.0/github#RepositoriesService.ListCommits
-			// https://pkg.go.dev/github.com/google/go-github/v48@v48.2.0/github#CommitsListOptions
-			// https://pkg.go.dev/github.com/google/go-github/v48@v48.2.0/github#RepositoryCommit
-			// https://pkg.go.dev/github.com/google/go-github/v48@v48.2.0/github#Commit
-			// https://pkg.go.dev/github.com/google/go-github/v48@v48.2.0/github#CommitFile
+			// https://pkg.go.dev/github.com/google/go-github/v71@v48.2.0/github#RepositoriesService.ListCommits
+			// https://pkg.go.dev/github.com/google/go-github/v71@v48.2.0/github#CommitsListOptions
+			// https://pkg.go.dev/github.com/google/go-github/v71@v48.2.0/github#RepositoryCommit
+			// https://pkg.go.dev/github.com/google/go-github/v71@v48.2.0/github#Commit
+			// https://pkg.go.dev/github.com/google/go-github/v71@v48.2.0/github#CommitFile
 
 			if opts.EnsureCommits {
 

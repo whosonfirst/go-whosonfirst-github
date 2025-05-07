@@ -3,7 +3,7 @@ module github.com/whosonfirst/go-whosonfirst-github
 go 1.24.2
 
 require (
-	github.com/google/go-github/v48 v48.2.0
+	github.com/google/go-github/v71 v71.0.0
 	github.com/sfomuseum/go-flags v0.10.0
 	github.com/sfomuseum/iso8601duration v1.1.0
 	github.com/sfomuseum/runtimevar v1.3.0
@@ -46,7 +46,6 @@ require (
 	github.com/whosonfirst/go-ioutil v1.0.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	gocloud.dev v0.41.0 // indirect
-	golang.org/x/crypto v0.36.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
