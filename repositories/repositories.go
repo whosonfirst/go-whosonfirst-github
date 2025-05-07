@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/go-github/v48/github"
+	"github.com/google/go-github/v71/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
@@ -74,9 +74,9 @@ func ListCommitFilesWithCallback(ctx context.Context, opts *ListCommitFilesOptio
 
 		slog.Debug("Commit", "sha", *rc.SHA)
 
-		// https://pkg.go.dev/github.com/google/go-github/v48/github#RepositoriesService.GetCommit
-		// https://pkg.go.dev/github.com/google/go-github/v48/github#Response
-		// https://pkg.go.dev/github.com/google/go-github/v48/github#ListOptions
+		// https://pkg.go.dev/github.com/google/go-github/v71/github#RepositoriesService.GetCommit
+		// https://pkg.go.dev/github.com/google/go-github/v71/github#Response
+		// https://pkg.go.dev/github.com/google/go-github/v71/github#ListOptions
 
 		page := 1
 

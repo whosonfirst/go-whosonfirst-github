@@ -13,7 +13,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/google/go-github/v48/github"
+	"github.com/google/go-github/v71/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
@@ -109,13 +109,9 @@ func main() {
 
 				if *hook_prefix != "" {
 
-					v, ok := h.Config["url"]
+					url := h.Config.URL
 
-					if !ok {
-						continue
-					}
-
-					if !strings.HasPrefix(v.(string), *hook_prefix) {
+					if !strings.HasPrefix(*url, *hook_prefix) {
 						continue
 					}
 				}
