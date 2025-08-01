@@ -4,15 +4,16 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/google/go-github/v71/github"
-	"github.com/sfomuseum/go-flags/multi"
-	"github.com/whosonfirst/go-whosonfirst-github/organizations"
-	"github.com/whosonfirst/go-whosonfirst-github/util"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
 	"sync"
+
+	"github.com/google/go-github/v74/github"
+	"github.com/sfomuseum/go-flags/multi"
+	"github.com/whosonfirst/go-whosonfirst-github/organizations"
+	"github.com/whosonfirst/go-whosonfirst-github/util"	
 )
 
 func main() {

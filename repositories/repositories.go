@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/go-github/v71/github"
+	"github.com/google/go-github/v74/github"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
