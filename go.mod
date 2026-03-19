@@ -7,7 +7,7 @@ require (
 	github.com/sfomuseum/go-flags v0.11.0
 	github.com/sfomuseum/iso8601duration v1.1.0
 	github.com/sfomuseum/runtimevar v1.3.2
-	golang.org/x/oauth2 v0.30.0
+	golang.org/x/oauth2 v0.34.0
 )
 
 require (
@@ -55,12 +55,12 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.40.0 // indirect
 	go.opentelemetry.io/otel/trace v1.40.0 // indirect
 	gocloud.dev v0.43.0 // indirect
-	golang.org/x/net v0.42.0 // indirect
+	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/text v0.32.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	google.golang.org/api v0.242.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250715232539-7130f93afb79 // indirect
-	google.golang.org/grpc v1.73.0 // indirect
-	google.golang.org/protobuf v1.36.6 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251202230838-ff82c1b0f217 // indirect
+	google.golang.org/grpc v1.79.3 // indirect
+	google.golang.org/protobuf v1.36.10 // indirect
 )
