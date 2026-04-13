@@ -7,7 +7,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/sfomuseum/runtimevar"
+	"github.com/aaronland/gocloud/runtimevar"
 	"github.com/whosonfirst/go-whosonfirst-github/util"
 )
 
